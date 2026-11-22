@@ -1,17 +1,25 @@
 <!DOCTYPE html>
-<html lang="uz">
+<html lang="uz" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Oqat — Yaqin ovqatlanish joylari va menyu</title>
-    <!-- Google Fonts -->
+    <title>Oqat — Yaqin ovqatlanish maskanlari va taomlar menyusi</title>
+    
+    <!-- Meta SEO & Icons -->
+    <meta name="description" content="Toshkentdagi eng yaqin ovqatlanish joylari, milliy taomlar, fast-food, kafelar va ularning jonli menyusi">
+    <meta name="theme-color" content="#FF5722">
+
+    <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Custom CSS -->
+    
+    <!-- Font Awesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Custom CSS (Ultra-modern & Smooth Animations) -->
     <link rel="stylesheet" href="css/style.css">
+    
     <!-- Yandex Maps JS API v2.1 -->
     <script src="https://api-maps.yandex.ru/2.1/?lang=uz_UZ" type="text/javascript"></script>
 </head>
@@ -19,102 +27,309 @@
     <!-- Asosiy ilova konteyneri -->
     <div class="app-container">
         
-        <!-- Yuqori qidiruv va filtr qismi -->
+        <!-- Yuqori qidiruv, brend va filtrlar bloki -->
         <header class="app-header">
+            <!-- Brand va Tezkor Tugmalar -->
             <div class="header-top">
-                <div class="brand">
-                    <span class="logo-icon">🍲</span>
-                    <span class="logo-text">Oqat</span>
+                <div class="brand-badge" title="Oqat — Gastronomik platforma">
+                    <div class="logo-animated-icon">
+                        <i class="fa-solid fa-bowl-food"></i>
+                    </div>
+                    <div class="brand-title">
+                        <span class="brand-name">Oqat</span>
+                        <span class="brand-subtitle">Smart Food Radar</span>
+                    </div>
                 </div>
-                <div class="view-toggles">
-                    <button id="viewToggleBtn" class="btn-icon" title="Xarita / Ro'yxat ko'rinishi">
+
+                <div class="header-action-buttons">
+                    <!-- Tungi/Kunduzgi rejim (Dark/Light mode) -->
+                    <button id="themeToggleBtn" class="btn-glass" title="Mavzuni o'zgartirish">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                    <!-- Saqlanganlar (Sevimlilar) -->
+                    <button id="favoritesToggleBtn" class="btn-glass" title="Sevimlilar">
+                        <i class="fa-solid fa-heart"></i>
+                        <span id="favoritesBadge" class="badge-dot hidden">0</span>
+                    </button>
+                    <!-- Xarita / Ro'yxat ko'rinishi -->
+                    <button id="viewToggleBtn" class="btn-glass" title="Ro'yxat / Xarita">
                         <i class="fa-solid fa-list-ul"></i>
                     </button>
-                    <button id="locateMeBtn" class="btn-icon" title="Mening joylashuvim">
-                        <i class="fa-solid fa-crosshairs"></i>
+                    <!-- Joylashuvim -->
+                    <button id="locateMeBtn" class="btn-glass" title="Mening joylashuvim">
+                        <i class="fa-solid fa-location-crosshairs"></i>
                     </button>
                 </div>
             </div>
 
             <!-- Qidiruv paneli -->
             <div class="search-bar-container">
-                <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                <input type="text" id="searchInput" placeholder="Oshxona, kofe yoki taom qidiring..." autocomplete="off">
-                <button id="clearSearchBtn" class="clear-btn hidden"><i class="fa-solid fa-xmark"></i></button>
+                <div class="search-icon-wrapper">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <input type="text" id="searchInput" class="search-input" placeholder="Oshxona, lag'mon, burger yoki kofe qidiring..." autocomplete="off">
+                <button id="clearSearchBtn" class="search-clear-btn hidden" title="Tozalash">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
 
-            <!-- Kategoriya tugmalari (Gorizontal scroll) -->
-            <div class="categories-scroll" id="categoriesContainer">
+            <!-- Kategoriya Tugmalari (Gorizontal Silliq Scroll) -->
+            <div class="categories-scroll-wrapper" id="categoriesContainer">
                 <!-- Javascript orqali to'ldiriladi -->
+            </div>
+
+            <!-- Tezkor Filtrlar (Quick Filter Chips) -->
+            <div class="quick-filter-bar" id="quickFilterBar">
+                <button class="filter-tag-chip" data-filter="rating45">
+                    <i class="fa-solid fa-star" style="color: var(--accent-gold);"></i> 4.5+ Reyting
+                </button>
+                <button class="filter-tag-chip" data-filter="openNow">
+                    <i class="fa-solid fa-clock" style="color: var(--accent-green);"></i> Ochiq joylar
+                </button>
+                <button class="filter-tag-chip" data-filter="budget">
+                    <i class="fa-solid fa-wallet"></i> Hamyonbop ($)
+                </button>
+                <button class="filter-tag-chip" data-filter="delivery">
+                    <i class="fa-solid fa-bolt" style="color: var(--primary);"></i> Tezkor
+                </button>
             </div>
         </header>
 
-        <!-- Xarita konteyneri -->
-        <main id="map" class="map-view"></main>
-
-        <!-- Ro'yxat ko'rinishi (Map o'rniga yoki uning ustida) -->
-        <section id="listView" class="list-view hidden">
-            <div class="list-header">
-                <h3 id="nearbyCountTitle">Yaqin ovqatlanish joylari</h3>
+        <!-- Xarita Konteyneri -->
+        <main class="map-view-wrapper">
+            <div id="map"></div>
+            
+            <!-- Xarita ustidagi yordamchi tugmalar -->
+            <div class="map-floating-controls">
+                <button id="mapZoomInBtn" class="map-control-btn" title="Kattalashtirish">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+                <button id="mapZoomOutBtn" class="map-control-btn" title="Kichiklashtirish">
+                    <i class="fa-solid fa-minus"></i>
+                </button>
+                <button id="mapResetViewBtn" class="map-control-btn" title="Toshkent markazi">
+                    <i class="fa-solid fa-arrows-to-dot"></i>
+                </button>
             </div>
-            <div class="restaurant-cards-grid" id="restaurantCardsContainer">
-                <!-- Javascript orqali kartochkalar joylanadi -->
+        </main>
+
+        <!-- Ro'yxat ko'rinishi (List View) -->
+        <section id="listView" class="list-view-container hidden">
+            <div class="list-view-header">
+                <h3 id="nearbyCountTitle" class="list-view-title">Yaqin ovqatlanish joylari</h3>
+                <select id="sortSelect" class="list-view-sort-select">
+                    <option value="distance">Eng yaqin</option>
+                    <option value="rating">Reytingi yuqori</option>
+                    <option value="name">Alifbo bo'yicha</option>
+                </select>
+            </div>
+            <div class="cards-grid" id="restaurantCardsContainer">
+                <!-- Javascript orqali to'ldiriladi -->
             </div>
         </section>
 
         <!-- Pastdan chiquvchi Menyu oynasi (Bottom Sheet / Modal) -->
         <div id="menuBottomSheet" class="bottom-sheet collapsed">
-            <!-- Tutqich (Drag handle) -->
-            <div class="sheet-drag-area" id="sheetDragArea">
-                <div class="sheet-handle"></div>
+            <!-- Tutqich (Drag Handle) -->
+            <div class="sheet-handle-zone" id="sheetDragArea">
+                <div class="sheet-handle-bar"></div>
             </div>
 
             <div class="sheet-scroll-body">
-                <!-- Restoran haqida qisqacha banner -->
-                <div class="restaurant-hero" id="sheetRestHero">
-                    <img id="sheetRestPhoto" src="" alt="Restoran surati">
-                    <div class="hero-overlay">
-                        <button class="close-sheet-btn" id="closeSheetBtn"><i class="fa-solid fa-xmark"></i></button>
-                        <div class="hero-info">
-                            <span class="category-badge" id="sheetRestCategory">Milliy</span>
-                            <h2 id="sheetRestName">Restoran nomi</h2>
-                            <p class="rest-address" id="sheetRestAddress"><i class="fa-solid fa-location-dot"></i> Manzil</p>
+                <!-- Restoran Hero Banner -->
+                <div class="sheet-hero-banner" id="sheetRestHero">
+                    <img id="sheetRestPhoto" src="" alt="Restoran rasmi">
+                    <div class="sheet-hero-overlay">
+                        <div class="sheet-hero-top-actions">
+                            <span class="sheet-category-badge" id="sheetRestCategory">Milliy</span>
+                            <div style="display:flex; gap:8px;">
+                                <button id="sheetFavoriteBtn" class="sheet-action-icon-btn" title="Sevimlilarga qo'shish">
+                                    <i class="fa-regular fa-heart"></i>
+                                </button>
+                                <button id="closeSheetBtn" class="sheet-action-icon-btn" title="Yopish">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="sheet-hero-info">
+                            <h2 class="sheet-hero-title" id="sheetRestName">Restoran nomi</h2>
+                            <p class="sheet-hero-address" id="sheetRestAddress">
+                                <i class="fa-solid fa-location-dot"></i> Manzil
+                            </p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Restoran ma'lumotlari: masofa, reyting, telefon -->
-                <div class="restaurant-meta-bar">
-                    <div class="meta-item">
-                        <i class="fa-solid fa-star star-icon"></i>
-                        <span id="sheetRestRating" class="bold">4.8</span>
-                    </div>
-                    <div class="meta-divider"></div>
-                    <div class="meta-item">
-                        <i class="fa-solid fa-person-walking"></i>
-                        <span id="sheetRestDistance">350 m</span>
-                    </div>
-                    <div class="meta-divider"></div>
-                    <a href="#" id="sheetRestPhoneLink" class="call-btn">
-                        <i class="fa-solid fa-phone"></i> Qo'ng'iroq
+                <!-- Tezkor Amallar Qatori (Qo'ng'iroq, Marshrut, Ulashish) -->
+                <div class="sheet-quick-actions-bar">
+                    <a href="#" id="sheetRestPhoneLink" class="quick-action-card">
+                        <i class="fa-solid fa-phone"></i>
+                        <span>Qo'ng'iroq</span>
                     </a>
+                    <button id="sheetRestRouteBtn" class="quick-action-card">
+                        <i class="fa-solid fa-route"></i>
+                        <span>Marshrut</span>
+                    </button>
+                    <button id="sheetRestShareBtn" class="quick-action-card">
+                        <i class="fa-solid fa-share-nodes"></i>
+                        <span>Ulashish</span>
+                    </button>
+                    <button id="sheetRestHoursBtn" class="quick-action-card">
+                        <i class="fa-regular fa-clock"></i>
+                        <span id="sheetRestStatusText">Ochiq</span>
+                    </button>
                 </div>
 
-                <!-- Menyu sarlavhasi -->
-                <div class="menu-section-header">
-                    <h3>Taomlar Menyusi</h3>
-                    <span id="sheetMenuCount" class="badge-count">0 ta taom</span>
+                <!-- Restoran Ko'rsatkichlari (Reyting, Masofa, Ish vaqti) -->
+                <div class="sheet-meta-ribbon">
+                    <div class="ribbon-item">
+                        <span class="ribbon-value">
+                            <i class="fa-solid fa-star" style="color:var(--accent-gold);"></i>
+                            <span id="sheetRestRating">4.8</span>
+                        </span>
+                        <span class="ribbon-label" id="sheetRestReviews">340+ sharh</span>
+                    </div>
+                    <div class="ribbon-divider"></div>
+                    <div class="ribbon-item">
+                        <span class="ribbon-value">
+                            <i class="fa-solid fa-person-walking" style="color:var(--primary);"></i>
+                            <span id="sheetRestDistance">350 m</span>
+                        </span>
+                        <span class="ribbon-label" id="sheetRestDeliveryTime">20 daqiqa</span>
+                    </div>
+                    <div class="ribbon-divider"></div>
+                    <div class="ribbon-item">
+                        <span class="ribbon-value" id="sheetRestPriceLevel">$$</span>
+                        <span class="ribbon-label">O'rtacha chek</span>
+                    </div>
+                </div>
+
+                <!-- Menyu sarlavhasi va Taom toifalari -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h3 style="font-size: 17px; font-weight: 800; color: var(--text-primary);">Taomlar Menyusi</h3>
+                    <span id="sheetMenuCount" style="font-size: 12px; font-weight: 700; color: var(--text-muted); background: var(--bg-subtle); padding: 3px 10px; border-radius: var(--radius-full);">
+                        0 ta taom
+                    </span>
+                </div>
+
+                <!-- Ichki Menyu Filter Tablari -->
+                <div class="sheet-menu-tabs-row" id="sheetMenuTabsContainer">
+                    <button class="menu-tab-btn active" data-tab="all">Barchasi</button>
+                    <button class="menu-tab-btn" data-tab="Asosiy taom">Asosiy</button>
+                    <button class="menu-tab-btn" data-tab="Salatlar">Salatlar</button>
+                    <button class="menu-tab-btn" data-tab="Desertlar">Desert</button>
+                    <button class="menu-tab-btn" data-tab="Ichimliklar">Ichimliklar</button>
                 </div>
 
                 <!-- Taomlar ro'yxati -->
-                <div class="menu-items-list" id="sheetMenuItemsContainer">
-                    <!-- Dinamik ravishda taomlar chiqadi -->
+                <div class="dishes-list" id="sheetMenuItemsContainer">
+                    <!-- Dinamik ravishda chiqariladi -->
                 </div>
             </div>
         </div>
 
-        <!-- Orqa fon qoraytirgich (Overlay) -->
-        <div id="modalBackdrop" class="modal-backdrop hidden"></div>
+        <!-- Suzuvchi Savat Paneli (Floating Cart Bar) -->
+        <div id="floatingCartBar" class="floating-cart-bar hidden">
+            <div class="cart-left-info">
+                <div class="cart-icon-circle">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                </div>
+                <div>
+                    <div id="cartCountText" class="cart-items-count">0 ta taom</div>
+                    <div id="cartTotalText" class="cart-total-amount">0 so'm</div>
+                </div>
+            </div>
+            <div class="cart-checkout-btn-text">
+                <span>Buyurtma berish</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </div>
+        </div>
+
+        <!-- Savat Modali (Cart & Order Modal) -->
+        <div id="cartModal" class="modal-overlay hidden">
+            <div class="modal-card">
+                <div class="modal-header">
+                    <h3 class="modal-title">
+                        <i class="fa-solid fa-basket-shopping" style="color:var(--primary);"></i>
+                        Sizning Buyurtmangiz
+                    </h3>
+                    <button id="closeCartModalBtn" class="modal-close-btn">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="cartModalRestaurantInfo" style="font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 12px;"></div>
+                    <div id="cartItemsListContainer">
+                        <!-- Taomlar savati -->
+                    </div>
+
+                    <div style="margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border-subtle);">
+                        <label style="font-size: 12px; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 6px;">Qabul qilish turi:</label>
+                        <div style="display: flex; gap: 8px; margin-bottom: 14px;">
+                            <button class="menu-tab-btn active" style="flex:1;">🚗 Yetkazib berish</button>
+                            <button class="menu-tab-btn" style="flex:1;">🛍 Olib ketish</button>
+                            <button class="menu-tab-btn" style="flex:1;">🍽 Stolga</button>
+                        </div>
+
+                        <label style="font-size: 12px; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 6px;">To'lov usuli:</label>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="menu-tab-btn active" style="flex:1;">Payme / Click</button>
+                            <button class="menu-tab-btn" style="flex:1;">Naqd pul</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <span style="font-size: 14px; font-weight: 600; color: var(--text-secondary);">Jami summa:</span>
+                        <span id="cartModalFinalPrice" style="font-size: 18px; font-weight: 800; color: var(--primary);">0 so'm</span>
+                    </div>
+                    <button id="confirmOrderBtn" class="btn-primary-action">
+                        <i class="fa-solid fa-circle-check"></i>
+                        Buyurtmani tasdiqlash
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sevimlilar Modali (Favorites Modal) -->
+        <div id="favoritesModal" class="modal-overlay hidden">
+            <div class="modal-card">
+                <div class="modal-header">
+                    <h3 class="modal-title">
+                        <i class="fa-solid fa-heart" style="color:#EF4444;"></i>
+                        Saqlangan Joylar
+                    </h3>
+                    <button id="closeFavoritesModalBtn" class="modal-close-btn">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div class="modal-body" id="favoritesModalBody">
+                    <!-- Sevimli restoranlar chiqadi -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Buyurtma Muvaffaqiyatli Modali (Order Success Confetti Simulation) -->
+        <div id="orderSuccessModal" class="modal-overlay hidden">
+            <div class="modal-card" style="text-align: center; padding: 28px 20px;">
+                <div style="width: 70px; height: 70px; border-radius: 50%; background: var(--accent-green-bg); color: var(--accent-green); font-size: 36px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto;">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <h3 style="font-size: 20px; font-weight: 800; color: var(--text-primary); margin-bottom: 8px;">Buyurtma qabul qilindi!</h3>
+                <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 20px; line-height: 1.4;">
+                    Oshxona buyurtmangizni tayyorlashni boshladi. Taxminiy yetkazib berish vaqti: <b>25-35 daqiqa</b>.
+                </p>
+                <button id="closeOrderSuccessBtn" class="btn-primary-action">
+                    Tushundim, rahmat!
+                </button>
+            </div>
+        </div>
+
+        <!-- Orqa Fon Pardasi (Backdrop Overlay) -->
+        <div id="modalBackdrop" class="modal-overlay hidden" style="z-index: 999; background: rgba(0,0,0,0.5);"></div>
+
+        <!-- Xabarnomalar konteyneri (Toasts) -->
+        <div id="toastContainer"></div>
     </div>
 
     <!-- Skriptlar -->
