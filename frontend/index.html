@@ -63,9 +63,9 @@
         </section>
 
         <!-- Pastdan chiquvchi Menyu oynasi (Bottom Sheet / Modal) -->
-        <div id="menuBottomSheet" class="bottom-sheet collapsed">
+        <div id="menuBottomSheet" class="bottom-sheet collapsed" role="dialog" aria-modal="true" aria-labelledby="sheetRestName">
             <!-- Tutqich (Drag handle) -->
-            <div class="sheet-drag-area" id="sheetDragArea">
+            <div class="sheet-drag-area" id="sheetDragArea" title="Yopish uchun pastga suring">
                 <div class="sheet-handle"></div>
             </div>
 
@@ -74,7 +74,7 @@
                 <div class="restaurant-hero" id="sheetRestHero">
                     <img id="sheetRestPhoto" src="" alt="Restoran surati">
                     <div class="hero-overlay">
-                        <button class="close-sheet-btn" id="closeSheetBtn"><i class="fa-solid fa-xmark"></i></button>
+                        <button class="close-sheet-btn" id="closeSheetBtn" aria-label="Yopish"><i class="fa-solid fa-xmark"></i></button>
                         <div class="hero-info">
                             <span class="category-badge" id="sheetRestCategory">Milliy</span>
                             <h2 id="sheetRestName">Restoran nomi</h2>

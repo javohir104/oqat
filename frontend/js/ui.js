@@ -1,10 +1,12 @@
 /**
  * Oqat — UI va Responsive boshqaruv moduli (Ismoil mas'ul)
  * Vazifalari:
- * 1. Kategoriya tugmachalarini chizish va faollashtirish
- * 2. Restoran kartochkalarini ro'yxatda (List View) ko'rsatish
- * 3. Menyu oynasini (Bottom-sheet modal) ochish va yopish
- * 4. Narxlarni chiroyli formatlash (so'm)
+ * 1. Semantic va qulay dizayn, zamonaviy UI/UX komponentlar
+ * 2. Kategoriya tugmachalarini chizish, gorizontal scroll va faollashtirish
+ * 3. Restoran kartochkalarini ro'yxatda (List View) ko'rsatish
+ * 4. Qidiruv bo'sh holati (Empty State) va tozalash tugmasi
+ * 5. Menyu oynasini (Bottom-sheet modal) ochish, yopish va mobil swipe gesturasi
+ * 6. Narxlarni chiroyli formatlash (so'm)
  */
 
 // Narxni "35 000 so'm" formatida chiqarish
@@ -31,6 +33,10 @@ function renderCategories(categories, activeCatId, onSelectCategory) {
         btn.addEventListener('click', () => {
             const catId = btn.getAttribute('data-cat-id');
             const parsedId = catId === 'all' ? 'all' : parseInt(catId, 10);
+            
+            // Faol chipni markazga silliq scroll qilish
+            btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+            
             onSelectCategory(parsedId);
         });
     });
@@ -50,11 +56,25 @@ function renderRestaurantCards(restaurants, onCardClick) {
 
     if (restaurants.length === 0) {
         container.innerHTML = `
-            <div style="grid-column: 1/-1; text-align: center; padding: 40px 20px; color: #718096;">
-                <i class="fa-solid fa-utensils" style="font-size: 36px; margin-bottom: 10px; color: #cbd5e0;"></i>
-                <p>Hech qanday ovqatlanish joyi topilmadi.</p>
+            <div class="empty-state">
+                <i class="fa-solid fa-utensils empty-icon"></i>
+                <p class="empty-text">Hech qanday ovqatlanish joyi topilmadi.</p>
+                <button class="btn-reset-filters" id="emptyResetBtn">
+                    <i class="fa-solid fa-rotate-left"></i> Qidiruvni tozalash
+                </button>
             </div>
         `;
+
+        const resetBtn = document.getElementById('emptyResetBtn');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => {
+                const searchInput = document.getElementById('searchInput');
+                if (searchInput) {
+                    searchInput.value = '';
+                    searchInput.dispatchEvent(new Event('input'));
+                }
+            });
+        }
         return;
     }
 
@@ -133,6 +153,7 @@ function openRestaurantSheet(restaurant) {
     }
 
     // Modalni ko'rsatish
+    sheet.style.transform = '';
     sheet.classList.remove('collapsed');
     backdrop.classList.remove('hidden');
 }
@@ -143,6 +164,66 @@ function openRestaurantSheet(restaurant) {
 function closeRestaurantSheet() {
     const sheet = document.getElementById('menuBottomSheet');
     const backdrop = document.getElementById('modalBackdrop');
-    if (sheet) sheet.classList.add('collapsed');
+    if (sheet) {
+        sheet.style.transform = '';
+        sheet.classList.add('collapsed');
+    }
     if (backdrop) backdrop.classList.add('hidden');
+}
+
+/**
+ * Mobil qurilmalarda Bottom Sheet ni pastga tortib yopish (Touch Swipe Gestures)
+ * va klaviatura (Escape) orqali yopish
+ */
+function initBottomSheetInteractions() {
+    const sheet = document.getElementById('menuBottomSheet');
+    const dragArea = document.getElementById('sheetDragArea');
+    if (!sheet || !dragArea) return;
+
+    let touchStartY = 0;
+    let touchCurrentY = 0;
+    let isDragging = false;
+
+    dragArea.addEventListener('touchstart', (e) => {
+        touchStartY = e.touches[0].clientY;
+        touchCurrentY = touchStartY;
+        isDragging = true;
+        sheet.style.transition = 'none';
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        touchCurrentY = e.touches[0].clientY;
+        const deltaY = touchCurrentY - touchStartY;
+        // Faqat pastga surishga ruxsat
+        if (deltaY > 0) {
+            sheet.style.transform = `translateY(${deltaY}px)`;
+        }
+    }, { passive: true });
+
+    window.addEventListener('touchend', () => {
+        if (!isDragging) return;
+        isDragging = false;
+        sheet.style.transition = '';
+        const deltaY = touchCurrentY - touchStartY;
+        if (deltaY > 80) {
+            closeRestaurantSheet();
+        } else {
+            sheet.style.transform = '';
+        }
+    });
+
+    // Escape tugmasi bosilganda modalni yopish
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !sheet.classList.contains('collapsed')) {
+            closeRestaurantSheet();
+        }
+    });
+}
+
+// Skript yuklanganda imo-ishoralarni ulash
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initBottomSheetInteractions);
+} else {
+    initBottomSheetInteractions();
 }
